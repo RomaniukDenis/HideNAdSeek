@@ -2,7 +2,11 @@ import './App.css';
 import io from 'socket.io-client';
 import Game from "./components/game/Game";
 
-const socket = io.connect();
+let origin = undefined;
+if(process.env.NODE_ENV == 'development'){
+    origin = 'http://localhost:5001'
+}
+const socket = io.connect(origin);
 
 function App() {
   return (

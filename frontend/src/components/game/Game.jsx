@@ -9,6 +9,7 @@ import { useLoader } from "@react-three/fiber";
 import { RepeatWrapping, TextureLoader } from "three";
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import Timer from "./timer/Timer";
+import Info from "./info/Info";
 
 const playerMovement = {
     up: false,
@@ -139,6 +140,10 @@ function Game(props){
             {
             room.gameStage === STAGE_HIDING ?
             <Timer gameStage = {room.gameStage} timer = {room.hidingTime} color = "black"/> : null
+            }
+            {
+            room.gameStage === STAGE_PREPARATION ?
+            <Info message='Waiting for players...' color = "black"/> : null
             }
             {
             room.gameStage === STAGE_PLAYING ?
