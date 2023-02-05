@@ -3,13 +3,14 @@ import classes from "./Game.module.css"
 import Player from "./player/Player"
 import Plane from "./plane/Plane";
 import RoomForm from "./room-from/RoomForm";
-import {OrbitControls, Stars} from "@react-three/drei"
+import {OrbitControls, Stars, Cylinder} from "@react-three/drei"
 import { useEffect, useRef, useState } from "react";
 import { useLoader } from "@react-three/fiber";
 import { RepeatWrapping, TextureLoader } from "three";
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import Timer from "./timer/Timer";
 import Info from "./info/Info";
+import Chat from "./chat/Chat"
 
 const playerMovement = {
     up: false,
@@ -33,6 +34,7 @@ function Game(props){
     const [room, setRoom] =  useState({players:[], world:[]});
     const [cameraPos, setCameraPos] =  useState([0, 0, 0]);
     const [currentPlayer, setCurrentPlayer] =  useState({});
+    const [activeSkills, setActiveSkills] =  useState([]);
     const orbitControlRef = useRef();
 
     const models = new Map();
@@ -106,8 +108,10 @@ function Game(props){
         socket.emit("player_move", {playerMovement, rotation})
     }
     const pressHandler = (event) => {
-        if(event.keyCode == 101){
-            socket.emit('catch_spell');
+        if(event.keyCode === 101 || event.keyCode === 69) {
+          socket.emit('catch_spell');
+          activeSkills.push({position: currentPlayer.position});
+          setTimeout(() => activeSkills.pop(), 500);
         }
     }
 
@@ -136,6 +140,7 @@ function Game(props){
 
     return(
         <div className={classes.canvasContainer}>
+            {room.name ? <Chat socket={socket} messages={room.messages}/> : null}
             {!room.name ? <RoomForm socket={socket}/> : null}
             {
             room.gameStage === STAGE_HIDING ?
@@ -162,6 +167,7 @@ function Game(props){
                 />
                 <Stars/>
                 <ambientLight intensity={0.9}/>
+                {activeSkills.map(skill => <Cylinder args={[15, 15, 1.5, 30]} position={skill.position} material-color="hotpink"></Cylinder>)}
                 <pointLight position={[0, 100, 0]} />
                 {room.players.map(p => <Player position={p.position} key={p.id} model={p.model} type={p.type} getObj={getObj}/>)}
                 <Plane world = {room.world} getObj={getObj}/>

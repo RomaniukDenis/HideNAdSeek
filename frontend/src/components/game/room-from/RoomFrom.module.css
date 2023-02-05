@@ -6,3 +6,21 @@
     width: 15rem;
     z-index: 1000;
 }
+
+.roomform input{
+    background-color:aqua;
+    border-radius: 10%;
+}
+.roomform input:hover{
+    color:rgb(8, 51, 51);
+    border-radius: 15%;
+}
+
+.roomform button{
+    background-color: blueviolet;
+    border-radius: 10%;
+}
+.roomform button:hover{
+    background-color: rgb(43, 34, 51);
+    border-radius: 15%;
+}

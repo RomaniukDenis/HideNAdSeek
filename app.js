@@ -5,6 +5,7 @@ const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const cors = require("cors");
+const { off } = require('process');
 
 
 const STAGE_PREPARATION = 'REPARATION';
@@ -91,6 +92,13 @@ io.on('connection', (socket) => {
             }
         }
     });
+
+    socket.on('message', message => {
+        const room = rooms.find(r => r.name == socketRoom);
+        if(room){
+            room.messages.push(message)
+        }
+    })
 
     socket.on("catch_spell", () => {
         const room = rooms.find(r => r.name == socketRoom)
